@@ -1,6 +1,7 @@
 const botonAbrirArchivo = document.getElementById("btn-abrir-archivo");
 const botonCrearArchivo = document.getElementById("btn-crear-archivo");
 const botonGuardarArchivo = document.getElementById("btn-guardar-archivo");
+const botonCompilar = document.getElementById("btn-compilar");
 
 /*funcionalidad de editor de codigo*/
 
@@ -63,4 +64,10 @@ function destroyClickedElement(event) {
     console.log("heyyyy");
     document.body.removeChild(event.target);
 }
+
+//funcion para compilar el archivo
+
+botonCompilar.addEventListener("click", function(){
+    grammar.parse(Fuente.getValue());
+});
 

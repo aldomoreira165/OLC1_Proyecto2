@@ -61,7 +61,6 @@ botonGuardarArchivo.addEventListener("click", function () {
 });
 
 function destroyClickedElement(event) {
-    console.log("heyyyy");
     document.body.removeChild(event.target);
 }
 

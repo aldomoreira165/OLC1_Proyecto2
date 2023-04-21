@@ -16,6 +16,7 @@
     let OperacionLogica             =   require("../Expresiones/OperacionLogica").OperacionLogica;
     let OperacionRelacional         =   require("../Expresiones/OperacionRelacional").OperacionRelacional;
     let While                       =   require("../Instrucciones/While").While;
+    let DoWhile                     =   require("../Instrucciones/DoWhile").DoWhile;
     let Valor                       =   require("../Expresiones/Valor").Valor;
     let Incremento                  =   require("../Instrucciones/Incremento").Incremento;
     let Decremento                  =    require("../Instrucciones/Decremento").Decremento;
@@ -57,7 +58,8 @@ frac                        (?:\.[0-9]+)
 "else"                          {   return 'telse';     }
 "void"                          {   return 'tvoid';     }
 "return"                        {   return 'treturn';   }
-"new"                          {   return 'tnew';     }
+"new"                           {   return 'tnew';     }
+"do"                             {   return 'tdo';     }
 
 /* =================== EXPRESIONES REGULARES ===================== */
 ([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*             yytext = yytext.toLowerCase();          return 'id';
@@ -160,6 +162,7 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   IF                          { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
             |   WHILE                       { $$ = $1; }
+            |   DO_WHILE                    { $$ = $1; }
             |   INCREMENTO       ';'        { $$ = $1; }
             |   DECREMENTO       ';'        { $$ = $1; }     
             |   FOR                         { $$ = $1; }
@@ -232,6 +235,12 @@ ELSE    :   telse IF
 WHILE   : twhile '(' EXP ')' BLOQUE_SENTENCAS
         {
             $$ = new While($3, $5, @1.first_line, @1.first_column );
+        }
+;
+
+DO_WHILE : tdo BLOQUE_SENTENCAS twhile '(' EXP ')' ';'
+        {
+            $$ = new DoWhile($2, $5, @1.first_line, @1.first_column );
         }
 ;
 

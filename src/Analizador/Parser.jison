@@ -18,7 +18,8 @@
     let While                       =   require("../Instrucciones/While").While;
     let Valor                       =   require("../Expresiones/Valor").Valor;
     let Incremento                  =   require("../Instrucciones/Incremento").Incremento;
-    let Decremento                 =    require("../Instrucciones/Decremento").Decremento;
+    let Decremento                  =    require("../Instrucciones/Decremento").Decremento;
+    let For                         =    require("../Instrucciones/For").For;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -52,6 +53,7 @@ frac                        (?:\.[0-9]+)
 "String"                        {   return 'tstring';   }
 "if"                            {   return 'tif';       }
 "while"                         {   return 'twhile';    }
+"for"                           {   return 'tfor';    }
 "else"                          {   return 'telse';     }
 "void"                          {   return 'tvoid';     }
 "return"                        {   return 'treturn';   }
@@ -153,13 +155,14 @@ BLOQUE_SENTENCAS : '{' SENTENCIAS '}'
 
 SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   FUNCION                     { $$ = $1; }
-            |   ASIGNACION  ';'               { $$ = $1; }
+            |   ASIGNACION  ';'             { $$ = $1; }
             |   VECTOR_ADD                  { $$ = $1; }
             |   IF                          { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
             |   WHILE                       { $$ = $1; }
             |   INCREMENTO       ';'        { $$ = $1; }
-            |   DECREMENTO       ';'        { $$ = $1; }
+            |   DECREMENTO       ';'        { $$ = $1; }     
+            |   FOR                         { $$ = $1; }
 ;
 
 DECLARACION : TIPO  id  '=' EXP 
@@ -229,6 +232,26 @@ ELSE    :   telse IF
 WHILE   : twhile '(' EXP ')' BLOQUE_SENTENCAS
         {
             $$ = new While($3, $5, @1.first_line, @1.first_column );
+        }
+;
+
+FOR     : tfor '(' DECLARACION ';' EXP ';' ACTUALIZACION_FOR ')' BLOQUE_SENTENCAS
+        {
+            $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column );
+        }
+        | tfor '(' ASIGNACION ';' EXP ';' ACTUALIZACION_FOR ')' BLOQUE_SENTENCAS
+        {
+            $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column );
+        }
+;
+
+ACTUALIZACION_FOR: id '++'
+        {
+           $$ = new Incremento($1, @1.first_line, @1.first_column)
+        }
+        | id '--'
+        {
+           $$ = new Decremento($1, @1.first_line, @1.first_column) 
         }
 ;
 

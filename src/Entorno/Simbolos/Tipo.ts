@@ -1,10 +1,10 @@
 import { TipoPrimitivo } from "./TipoPrimitivo";
 
 export class Tipo {
-    
-    tipo        : TipoPrimitivo;
 
-    constructor(tipoPrimitivo :TipoPrimitivo) {
+    tipo: TipoPrimitivo;
+
+    constructor(tipoPrimitivo: TipoPrimitivo) {
         this.tipo = tipoPrimitivo;
     }
 

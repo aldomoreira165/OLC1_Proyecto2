@@ -1,18 +1,22 @@
 import { Funcion } from "./Simbolos/Funcion";
 import { Variable } from "./Simbolos/Variable";
 import { Arreglo } from './Simbolos/Arreglo';
+import { Lista } from "./Simbolos/Lista";
+
 export class Ambito {
 
     anterior: Ambito;
     tabla_variables: Map<string,    Variable>;
     tabla_funciones: Map<string,   Funcion>;
     tabla_arreglos: Map<string,   Arreglo>;
+    tabla_listas: Map<string,   Lista>;
 
     constructor(anterior: Ambito) {
         this.anterior = anterior;
         this.tabla_variables = new Map<string,   Variable>();
         this.tabla_funciones = new Map<string,   Funcion>();
         this.tabla_arreglos = new Map<string,   Arreglo>();
+        this.tabla_listas = new Map<string,   Lista>();
     }
 
     public insertarVariable(id :string, variable :Variable) {
@@ -20,6 +24,9 @@ export class Ambito {
     }
     public insertarArreglo(id :string, arreglo :Arreglo) {
         this.tabla_arreglos.set(id, arreglo);
+    }
+    public insertarLista(id :string, lista :Lista) {
+        this.tabla_listas.set(id, lista);
     }
     public insertarFuncion(id :string, funcion :Funcion) {
         this.tabla_funciones.set(id, funcion);
@@ -56,6 +63,22 @@ export class Ambito {
         }
         return undefined;
     }
+
+    public getLista(id :string): Lista {
+        let e: Ambito = this;
+        while (e != null) {
+            try {
+                const variable = e.tabla_listas.get(id);
+                if (variable != null) {
+                    return variable as Lista;
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            e = e.anterior;
+        }
+        return undefined;
+    }
     
     public getFuncion(id :string): Funcion {
         return this.tabla_funciones.get(id);
@@ -70,5 +93,8 @@ export class Ambito {
     }
     public existeArreglo(id :string) : boolean {
         return this.tabla_arreglos.get(id) != undefined;
+    }
+    public existeLista(id :string) : boolean {
+        return this.tabla_listas.get(id) != undefined;
     }
 }

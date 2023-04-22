@@ -21,6 +21,8 @@
     let Incremento                  =   require("../Instrucciones/Incremento").Incremento;
     let Decremento                  =    require("../Instrucciones/Decremento").Decremento;
     let For                         =    require("../Instrucciones/For").For;
+    let Ternario                    =    require("../Expresiones/Ternario").Ternario;
+    let Casteo                  =    require("../Expresiones/Casteo").Casteo;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -52,6 +54,7 @@ frac                        (?:\.[0-9]+)
 "boolean"                       {   return 'tboolean';  }
 "double"                        {   return 'tdouble';   }
 "String"                        {   return 'tstring';   }
+"char"                          {   return 'tchar';   }
 "if"                            {   return 'tif';       }
 "while"                         {   return 'twhile';    }
 "for"                           {   return 'tfor';    }
@@ -84,6 +87,7 @@ frac                        (?:\.[0-9]+)
 ","                             {return ',';}
 ":"                             {return ':';}
 ";"                             {return ';';}
+"?"                             {return '?';}
 "||"                            {return '||';}
 "&&"                            {return '&&';}
 "!="                            {return '!=';}
@@ -108,14 +112,16 @@ digit                           {return 'num';}
 %left '^'
 %left '||'
 %left '&&'
+%left '?'
 %left '!=' '==' '==='
-%left '>' '<' '<=' '>=' 
-
+%left '>' '<' '<=' '>='
+ 
 /*Operaciones numericas*/
 %left '+' '-'
 %left '*' '/' '%'
 %right '^^' 
 %right negativo '!' '(' 
+
 
 
 %start INICIO
@@ -175,6 +181,10 @@ DECLARACION : TIPO  id  '=' EXP
             | TIPO  id  
             {
                 $$ = new DeclararVariable($1, $2, undefined, @2.first_line, @2.first_column);
+            }
+            | TIPO id '=' CASTEO
+            {
+                $$ = new DeclararVariable($1, $2, $4, @2.first_line, @2.first_column);
             }
             | TIPO '[' ']' id '=' tnew TIPO '[' entero ']' 
             {
@@ -256,15 +266,21 @@ FOR     : tfor '(' DECLARACION ';' EXP ';' ACTUALIZACION_FOR ')' BLOQUE_SENTENCA
 
 ACTUALIZACION_FOR: id '++'
         {
-           $$ = new Incremento($1, @1.first_line, @1.first_column)
+           $$ = new Incremento($1, @1.first_line, @1.first_column);
         }
         | id '--'
         {
-           $$ = new Decremento($1, @1.first_line, @1.first_column) 
+           $$ = new Decremento($1, @1.first_line, @1.first_column); 
         }
 ;
 
-FUNCION:        TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
+CASTEO: '(' TIPO ')' EXP
+    {
+        $$ = new Casteo($2, $4, @1.first_line, @1.first_column);
+    }
+;
+
+FUNCION:    TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
             {
                 $$ = new DeclararFuncion($1, $2, $4, $6, @2.first_line, @2.first_column);
             }
@@ -287,6 +303,7 @@ TIPO    :       tinteger                    { $$ = new Tipo(TipoPrimitivo.Intege
         |       tboolean                    { $$ = new Tipo(TipoPrimitivo.Boolean); }
         |       tstring                     { $$ = new Tipo(TipoPrimitivo.String);  }
         |       tdouble                     { $$ = new Tipo(TipoPrimitivo.Double);  }
+        |       tchar                       { $$ = new Tipo(TipoPrimitivo.Char);  }
 ; 
 
 LISTA_PARAM :   LISTA_PARAM ',' TIPO id

@@ -192,10 +192,6 @@ DECLARACION : TIPO  id  '=' EXP
             {
                 $$ = new DeclararVariable($1, $2, undefined, @2.first_line, @2.first_column);
             }
-            | TIPO id '=' CASTEO
-            {
-                $$ = new DeclararVariable($1, $2, $4, @2.first_line, @2.first_column);
-            }
             | TIPO '[' ']' id '=' tnew TIPO '[' entero ']' 
             {
                 $$ = new DeclararArreglo($1, $4, $7,undefined, $9, @2.first_line, @2.first_column);
@@ -393,4 +389,5 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   ttrue                           { $$ = new Valor($1, "true", @1.first_line, @1.first_column);   }
     |   tfalse                          { $$ = new Valor($1, "false", @1.first_line, @1.first_column);  }
     |   TERNARIA                        { $$ = $1;}
+    |   CASTEO                          { $$ = $1;}
 ;

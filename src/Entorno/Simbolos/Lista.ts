@@ -23,6 +23,10 @@ export class Lista {
         this.objetos.push(valor);
     }
 
+    public modificarValor(pos:number, valor: Expresion){
+        this.objetos[pos] = valor;
+    }
+
     public getObjetoId(pos:number){
         return this.objetos[pos];
     }

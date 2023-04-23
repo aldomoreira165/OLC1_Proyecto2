@@ -26,6 +26,7 @@
     let Ternario                    =    require("../Expresiones/Ternario").Ternario;
     let Casteo                      =    require("../Expresiones/Casteo").Casteo;
     let InsertarLista               =    require("../Instrucciones/InsertarLista").InsertarLista;
+    let ModificarLista              =    require("../Instrucciones/ModificarLista").ModificarLista;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -172,6 +173,7 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   ASIGNACION  ';'             { $$ = $1; }
             |   VECTOR_ADD                  { $$ = $1; }
             |   LISTA_ADD                   { $$ = $1; }
+            |   LISTA_MODIFICAR  ';'        { $$ = $1; }
             |   IF                          { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
             |   WHILE                       { $$ = $1; }
@@ -234,6 +236,12 @@ VECTOR_ADD  :   id '[' entero ']' '=' EXP ';'
 LISTA_ADD: id '.' tadd '(' EXP ')' ';'
             {
                 $$ = new InsertarLista($1, $5, @1.first_line, @1.first_column);
+            }
+;
+
+LISTA_MODIFICAR: id '[' '[' entero ']' ']' '=' EXP
+            {
+                $$ = new ModificarLista($1, $4, $8, @1.first_line, @1.first_column);
             }
 ;
 

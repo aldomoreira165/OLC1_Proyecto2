@@ -48,7 +48,6 @@ export class DeclararVariable extends Instruccion{
                 res = "";
             }
         }
-
         let nueva_var = new Variable(this.tipo, this.id, res);
         actual.insertarVariable(this.id,nueva_var);
 

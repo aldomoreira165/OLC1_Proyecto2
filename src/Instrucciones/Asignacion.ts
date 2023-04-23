@@ -30,6 +30,7 @@ export class Asignacion extends Instruccion {
             throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id);
         }
 
+        //console.log(this.exp);
         variable.asignarValor(valor_asig);
 
     }

@@ -9,6 +9,7 @@
     let Asignacion                  =   require("../Instrucciones/Asignacion").Asignacion;
     let AsignacionVector            =   require("../Instrucciones/AsignacionVector").AsignacionVector;
     let If                          =   require("../Instrucciones/If").If;
+    let Ternario                    =   require("../Expresiones/Ternario").Ternario;
     let Parametro                   =   require("../Instrucciones/Parametro").Parametro;
     let AccesoVariable              =   require("../Expresiones/AccesoVariable").AccesoVariable;
     let AccesoVector                =   require("../Expresiones/AccesoVector").AccesoVector;
@@ -23,7 +24,6 @@
     let Incremento                  =   require("../Instrucciones/Incremento").Incremento;
     let Decremento                  =    require("../Instrucciones/Decremento").Decremento;
     let For                         =    require("../Instrucciones/For").For;
-    let Ternario                    =    require("../Expresiones/Ternario").Ternario;
     let Casteo                      =    require("../Expresiones/Casteo").Casteo;
     let InsertarLista               =    require("../Instrucciones/InsertarLista").InsertarLista;
     let ModificarLista              =    require("../Instrucciones/ModificarLista").ModificarLista;
@@ -115,11 +115,12 @@ digit                           {return 'num';}
 
 /* ================= ASOCIATIVIDAD y PRECEDENCIA DE OPERADORES ===============
 /*Operaciones logicas*/
-%left '++' '--'
-%left '^'
 %left '||'
 %left '&&'
 %left '?'
+%left ':'
+%left '++' '--'
+%left '^'
 %left '!=' '==' '==='
 %left '>' '<' '<=' '>='
  
@@ -180,7 +181,7 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   DO_WHILE                    { $$ = $1; }
             |   INCREMENTO       ';'        { $$ = $1; }
             |   DECREMENTO       ';'        { $$ = $1; }     
-            |   FOR                         { $$ = $1; }
+            |   FOR                         { $$ = $1; }      
 ;
 
 DECLARACION : TIPO  id  '=' EXP 
@@ -361,6 +362,12 @@ LISTA_EXP : LISTA_EXP ',' EXP
 LLAMADA_FUNCION     : id '(' LISTA_EXP ')' { $$ = new LlamadaFuncion($1, $3, @1.first_line, @1.first_column);    }
 ;
 
+TERNARIA: EXP '?' EXP ':' EXP
+        {
+            $$ = new Ternario($1, $3, $5, @1.first_line, @1.first_column);
+        }
+;
+
 EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '-' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '*' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
@@ -374,7 +381,7 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   EXP '<='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '>='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '&&'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
-    |   EXP '||'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
+    |   EXP '||'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}        
     |   id                              { $$ = new AccesoVariable($1, @1.first_line, @1.first_column);        }
     |   id '[' EXP ']'                  { $$ = new AccesoVector($1, $3,@1.first_line, @1.first_column);        }
     |   id  '[' '[' EXP ']' ']'         { $$ = new AccesoLista($1, $4, @1.first_line, @1.first_column);}
@@ -385,4 +392,5 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   cadena                          { $$ = new Valor($1, "string", @1.first_line, @1.first_column); }
     |   ttrue                           { $$ = new Valor($1, "true", @1.first_line, @1.first_column);   }
     |   tfalse                          { $$ = new Valor($1, "false", @1.first_line, @1.first_column);  }
+    |   TERNARIA                        { $$ = $1;}
 ;

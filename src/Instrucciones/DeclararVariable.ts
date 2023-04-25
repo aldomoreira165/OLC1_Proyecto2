@@ -21,15 +21,8 @@ export class DeclararVariable extends Instruccion{
     }
 
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
-
-        console.log(this.exp);
         
         // Verificar que no exista variable
-        console.log(actual.existeVariable(this.id));
-        if( actual.existeVariable(this.id) ) {
-            // * ERROR *
-            throw new Error("Variable ya se encuentra definida en el entorno actual: " + this.linea + " , " + this.columna);
-        }
 
         let res
         if(this.exp != undefined) {

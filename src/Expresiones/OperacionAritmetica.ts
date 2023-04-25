@@ -138,7 +138,49 @@ export class OperacionAritmetica extends Expresion {
         let prim2: TipoPrimitivo = tipo2.getPrimitivo();
         // TIPO DOUBLE
         if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Integer) {
-            
+            this.tipo = new Tipo(TipoPrimitivo.Integer);
+            return val1 - val2;
+        }else if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Double) {
+            this.tipo = new Tipo(TipoPrimitivo.Double);
+            return val1 - val2;
+        }else if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Boolean) {
+            if (val2 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return val1 - 1;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return val1 - 0;
+            }
+        }else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Integer) {
+            this.tipo = new Tipo(TipoPrimitivo.Double);
+            return val1 - val2;
+        }else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Double) {
+            this.tipo = new Tipo(TipoPrimitivo.Double);
+            return val1 - val2;
+        }else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Boolean) {
+            if (val2 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return val1 - 1;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return val1 - 0;
+            }
+        }else if (prim1 == TipoPrimitivo.Boolean && prim2 == TipoPrimitivo.Integer) {
+            if (val1 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return 1 - val2;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return 0 - val2;
+            }
+        }else if (prim1 == TipoPrimitivo.Boolean && prim2 == TipoPrimitivo.Double) {
+            if (val1 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return 1 - val2;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return 0 - val2;
+            }
         }
     }
 

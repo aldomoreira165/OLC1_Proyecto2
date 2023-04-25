@@ -51,28 +51,85 @@ export class OperacionAritmetica extends Expresion {
         let prim1: TipoPrimitivo = tipo1.getPrimitivo();
         let prim2: TipoPrimitivo = tipo2.getPrimitivo();
         // TIPO DOUBLE
-        if (
-            (prim1 == TipoPrimitivo.Double &&
-                (prim2 == TipoPrimitivo.Integer || prim2 == TipoPrimitivo.Double || prim2 == TipoPrimitivo.Char))
-            || (prim2 == TipoPrimitivo.Double &&
-                (prim1 == TipoPrimitivo.Integer || prim1 == TipoPrimitivo.Double || prim1 == TipoPrimitivo.Char))
-        ) {
+        if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Integer) {
+            this.tipo = new Tipo(TipoPrimitivo.Integer);
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Double) {
+            this.tipo = new Tipo(TipoPrimitivo.Double);
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Integer) {
             this.tipo = new Tipo(TipoPrimitivo.Double);
             return val1 + val2;
         }
-        // TIPO INTEGER
-        else if (
-            (prim1 == TipoPrimitivo.Integer &&
-                (prim2 == TipoPrimitivo.Integer || prim2 == TipoPrimitivo.Double || prim2 == TipoPrimitivo.Char))
-            || (prim2 == TipoPrimitivo.Integer &&
-                (prim1 == TipoPrimitivo.Integer || prim1 == TipoPrimitivo.Double || prim1 == TipoPrimitivo.Char))
-        ) {
-            this.tipo = new Tipo(TipoPrimitivo.Integer);
-            return val1 + val2;
-        }
-        else if (prim1 == TipoPrimitivo.String || prim2 == TipoPrimitivo.String) {
+        else if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Boolean) {
+            if (val2 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return val1 + 1;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return val1 + 0;
+            }
+        }else if(prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.String){
             this.tipo = new Tipo(TipoPrimitivo.String);
-            return val1.toString() + val2.toString();
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Double) {
+            this.tipo = new Tipo(TipoPrimitivo.Double);
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Boolean) {
+            if (val2 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return val1 + 1;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return val1 + 0;
+            }
+        }else if(prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.String){
+            this.tipo = new Tipo(TipoPrimitivo.String);
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.Boolean && prim2 == TipoPrimitivo.Integer) {
+            if (val1 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return val2 + 1;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Integer);
+                return val2 + 0;
+            }
+        }else if (prim1 == TipoPrimitivo.Boolean && prim2 == TipoPrimitivo.Double) {
+            if (val1 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return val2 + 1;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.Double);
+                return val2 + 0;
+            }
+        }else if (prim1 == TipoPrimitivo.Boolean && prim2 == TipoPrimitivo.String) {
+            if (val1 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.String);
+                return val1 + val2;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.String);
+                return val1 + val2;
+            }
+        }else if (prim1 == TipoPrimitivo.String && prim2 == TipoPrimitivo.Integer) {
+            this.tipo = new Tipo(TipoPrimitivo.String);
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.String && prim2 == TipoPrimitivo.Double) {
+            this.tipo = new Tipo(TipoPrimitivo.String);
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.String && prim2 == TipoPrimitivo.Boolean) {
+            if (val1 == true) {
+                this.tipo = new Tipo(TipoPrimitivo.String);
+                return val1 + val2;
+            }else{
+                this.tipo = new Tipo(TipoPrimitivo.String);
+                return val1 + val2;
+            }
+        }else if (prim1 == TipoPrimitivo.String && prim2 == TipoPrimitivo.Char) {
+            this.tipo = new Tipo(TipoPrimitivo.String);
+            return val1 + val2;
+        }else if (prim1 == TipoPrimitivo.String && prim2 == TipoPrimitivo.String) {
+            this.tipo = new Tipo(TipoPrimitivo.String);
+            return val1 + val2;
         }
     }
 
@@ -80,24 +137,8 @@ export class OperacionAritmetica extends Expresion {
         let prim1: TipoPrimitivo = tipo1.getPrimitivo();
         let prim2: TipoPrimitivo = tipo2.getPrimitivo();
         // TIPO DOUBLE
-        if (
-            (prim1 == TipoPrimitivo.Double &&
-                (prim2 == TipoPrimitivo.Integer || prim2 == TipoPrimitivo.Double || prim2 == TipoPrimitivo.Char))
-            || (prim2 == TipoPrimitivo.Double &&
-                (prim1 == TipoPrimitivo.Integer || prim1 == TipoPrimitivo.Double || prim1 == TipoPrimitivo.Char))
-        ) {
-            this.tipo = new Tipo(TipoPrimitivo.Double);
-            return val1 - val2;
-        }
-        // TIPO INTEGER
-        else if (
-            (prim1 == TipoPrimitivo.Integer &&
-                (prim2 == TipoPrimitivo.Integer || prim2 == TipoPrimitivo.Double || prim2 == TipoPrimitivo.Char))
-            || (prim2 == TipoPrimitivo.Integer &&
-                (prim1 == TipoPrimitivo.Integer || prim1 == TipoPrimitivo.Double || prim1 == TipoPrimitivo.Char))
-        ) {
-            this.tipo = new Tipo(TipoPrimitivo.Integer);
-            return val1 - val2;
+        if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Integer) {
+            
         }
     }
 
@@ -161,10 +202,10 @@ export class OperacionAritmetica extends Expresion {
         } else if (prim1 == TipoPrimitivo.Integer && prim2 == TipoPrimitivo.Double) {
             this.tipo = new Tipo(TipoPrimitivo.Double);
             return val1 ** val2;
-        }else if(prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Integer){
+        } else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Integer) {
             this.tipo = new Tipo(TipoPrimitivo.Double);
             return val1 ** val2;
-        }else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Double) {
+        } else if (prim1 == TipoPrimitivo.Double && prim2 == TipoPrimitivo.Double) {
             this.tipo = new Tipo(TipoPrimitivo.Double);
             return val1 ** val2;
         }

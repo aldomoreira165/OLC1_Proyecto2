@@ -75,6 +75,11 @@ frac                        (?:\.[0-9]+)
 "defaul"                        {   return 'tdefaul';     }
 "toLower"                      {   return 'ttoLower';     }
 "toUpper"                      {   return 'ttoUpper';     }
+"length"                      {   return 'tlength';     }
+"truncate"                      {   return 'ttruncate';     }
+'round'                        {   return 'tround';     }
+'toString'                        {   return 'ttostring';     }
+'typeOf'                        {   return 'ttypeof';     }
 
 /* =================== EXPRESIONES REGULARES ===================== */
 ([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*             yytext = yytext.toLowerCase();          return 'id';
@@ -392,6 +397,11 @@ BLOCK_CASES: ':' SENTENCIAS
 FUNCIONES_LENGUAJE
     : ttoLower '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
     | ttoUpper '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | tlength '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | ttruncate '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | tround '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | ttostring '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | ttypeof '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
 ;
  
 

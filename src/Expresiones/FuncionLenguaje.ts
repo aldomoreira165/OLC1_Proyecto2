@@ -1,6 +1,7 @@
 import { Ambito } from "../Entorno/Ambito";
 import { AST } from "../Entorno/AST";
 import { Expresion } from "../Entorno/Expresion";
+import { Lista } from "../Entorno/Simbolos/Lista";
 import { Tipo } from "../Entorno/Simbolos/Tipo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 
@@ -40,7 +41,7 @@ export class FuncionLenguaje extends Expresion {
 
     public getValor(actual: Ambito, global: Ambito, ast: AST) {
 
-        
+
         switch (this.funcion) {
             case "toLower":
                 {
@@ -55,6 +56,31 @@ export class FuncionLenguaje extends Expresion {
                     let cadenaUpper = valor.toUpperCase();
                     this.determinarTipo(this.exp, actual, global, ast);
                     return cadenaUpper;
+                }
+            case "truncate":
+                {
+                    let valor = this.exp.getValor(actual, global, ast);
+                    let cadenaTrunc = Math.trunc(valor);
+                    this.tipo = new Tipo(TipoPrimitivo.Integer);
+                    return cadenaTrunc;
+                }
+            case "round":
+                {
+                    let valor = this.exp.getValor(actual, global, ast);
+                    let cadenaRound = Math.round(valor);
+                    this.tipo = new Tipo(TipoPrimitivo.Integer);
+                    return cadenaRound;
+                }
+            case "toString":
+                {
+                    let valor = this.exp.getValor(actual, global, ast);
+                    let cadenaString = valor.toString();
+                    this.tipo = new Tipo(TipoPrimitivo.String);
+                    return cadenaString;
+                }
+            case "typeOf":
+                {
+                    
                 }
         }
     }

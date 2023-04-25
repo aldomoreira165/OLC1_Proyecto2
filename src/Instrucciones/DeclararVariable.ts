@@ -21,6 +21,8 @@ export class DeclararVariable extends Instruccion{
     }
 
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
+
+        console.log(this.exp);
         
         // Verificar que no exista variable
         console.log(actual.existeVariable(this.id));

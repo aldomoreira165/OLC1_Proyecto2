@@ -6,7 +6,7 @@ import { Analizador } from './Analizador/Analizador';
 import { AST } from './Entorno/AST';
 
 const app = express();
-const port = 5000;
+const port = 3000;
 
 // view engine setup
 app.set('views', path.join(__dirname, '../views'));

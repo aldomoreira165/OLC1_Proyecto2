@@ -27,6 +27,7 @@
     let Casteo                      =    require("../Expresiones/Casteo").Casteo;
     let InsertarLista               =    require("../Instrucciones/InsertarLista").InsertarLista;
     let ModificarLista              =    require("../Instrucciones/ModificarLista").ModificarLista;
+    let FuncionLenguaje             =    require("../Expresiones/FuncionLenguaje").FuncionLenguaje;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -69,6 +70,11 @@ frac                        (?:\.[0-9]+)
 "do"                            {   return 'tdo';     }
 "list"                          {   return 'tlist';     }                 
 "add"                           {   return 'tadd';     }                 
+"switch"                        {   return 'tswitch';     }                 
+"case"                        {   return 'tcase';     }                 
+"defaul"                        {   return 'tdefaul';     }
+"toLower"                      {   return 'ttoLower';     }
+"toUpper"                      {   return 'ttoUpper';     }
 
 /* =================== EXPRESIONES REGULARES ===================== */
 ([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*             yytext = yytext.toLowerCase();          return 'id';
@@ -86,6 +92,7 @@ frac                        (?:\.[0-9]+)
 "-"                             {return '-';}
 "*"                             {return '*';}
 "/"                             {return '/';}
+"^"                             {return '^';}
 "%"                             {return '%';}
 "("                             {return '(';}
 ")"                             {return ')';}
@@ -120,14 +127,13 @@ digit                           {return 'num';}
 %left '?'
 %left ':'
 %left '++' '--'
-%left '^'
 %left '!=' '==' '==='
 %left '>' '<' '<=' '>='
  
 /*Operaciones numericas*/
 %left '+' '-'
 %left '*' '/' '%'
-%right '^^' 
+%right '^' 
 %right negativo '!' '(' 
 
 
@@ -180,8 +186,8 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   WHILE                       { $$ = $1; }
             |   DO_WHILE                    { $$ = $1; }
             |   INCREMENTO       ';'        { $$ = $1; }
-            |   DECREMENTO       ';'        { $$ = $1; }     
-            |   FOR                         { $$ = $1; }      
+            |   DECREMENTO       ';'        { $$ = $1; }
+            |   FOR                         { $$ = $1; }
 ;
 
 DECLARACION : TIPO  id  '=' EXP 
@@ -200,7 +206,7 @@ DECLARACION : TIPO  id  '=' EXP
             {
                 $$ = new DeclararArreglo($1, $4,undefined, $7,undefined, @2.first_line, @2.first_column);
             }
-            | tlist '<' TIPO '>' id '=' 'tnew' 'tlist' '<' TIPO '>'
+            | tlist '<' TIPO '>' id '=' tnew tlist '<' TIPO '>'
             {
                 $$ = new DeclararLista($3, $5, $10, @2.first_line, @2.first_column);
             }
@@ -364,10 +370,36 @@ TERNARIA: EXP '?' EXP ':' EXP
         }
 ;
 
+SWITCH: tswitch '(' EXP ')' '{' BLOQUE_SWITCH '}'
+;
+
+BLOQUE_SWITCH: '{' L_CASE '}'
+    | '{' '}' 
+;
+
+L_CASE: L_CASE CASE
+        | CASE
+;
+
+CASE: tcase EXP BLOCK_CASES
+    | tdefaul BLOCK_CASES
+;
+
+BLOCK_CASES: ':' SENTENCIAS
+| ':'
+;
+
+FUNCIONES_LENGUAJE
+    : ttoLower '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | ttoUpper '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+;
+ 
+
 EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '-' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '*' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '/' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
+    |   EXP '^' EXP                    { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   '-' EXP %prec negativo          { $$ = $2;}
     |   '(' EXP ')'                     { $$ = $2;}
     |   EXP '=='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
@@ -390,4 +422,5 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   tfalse                          { $$ = new Valor($1, "false", @1.first_line, @1.first_column);  }
     |   TERNARIA                        { $$ = $1;}
     |   CASTEO                          { $$ = $1;}
+    |   FUNCIONES_LENGUAJE              { $$ = $1;}
 ;

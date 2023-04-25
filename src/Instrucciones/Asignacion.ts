@@ -27,7 +27,7 @@ export class Asignacion extends Instruccion {
 
         let valor_asig = this.exp.getValor(actual, global, ast);
         if(variable.getTipo().getPrimitivo() != this.exp.tipo.getPrimitivo()) {
-            throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id);
+            throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id + " en linea: " + this.linea);
         }
 
         //console.log(this.exp);

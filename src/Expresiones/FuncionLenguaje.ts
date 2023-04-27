@@ -115,6 +115,16 @@ export class FuncionLenguaje extends Expresion {
                         return tipoRetorno;
                     }
                 }
+            case "length":
+                {
+                    let valor = this.exp.getValor(actual, global, ast);
+                    let tipoDato = typeof valor
+                    if (tipoDato == "string") {
+                        let longitud = valor.length;
+                        this.tipo = new Tipo(TipoPrimitivo.Integer);
+                        return longitud;
+                    }
+                }
         }
     }
 

@@ -409,6 +409,7 @@ FUNCIONES_LENGUAJE
     | ttoCharArray '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
     | ttoString '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
     | ttypeOf '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | tlength '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
 ;
 
 EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}

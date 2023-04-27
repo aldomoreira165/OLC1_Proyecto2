@@ -191,7 +191,7 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   FUNCION                     { $$ = $1; }
             |   LISTA_ADD                   { $$ = $1; }
             |   LISTA_MODIFICAR  ';'        { $$ = $1; }
-            |   ASIGNACION                  { $$ = $1; }
+            |   ASIGNACION       ';'          { $$ = $1; }
             |   VECTOR_ADD                  { $$ = $1; }
             |   IF                          { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
@@ -253,7 +253,7 @@ DECLARACION : TIPO  id  '=' EXP
             }
 ;
 
-ASIGNACION  :    id '=' EXP ';'
+ASIGNACION  :    id '=' EXP
             {
                 $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
             }
@@ -398,6 +398,10 @@ ACTUALIZACION_FOR: id '++'
         | id '--'
         {
            $$ = new Decremento($1, @1.first_line, @1.first_column) 
+        }
+        | id '=' EXP
+        {
+           $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); 
         }
 ;
 

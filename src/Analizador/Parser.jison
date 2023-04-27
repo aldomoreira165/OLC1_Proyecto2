@@ -8,26 +8,27 @@
     let DeclararLista               =   require("../Instrucciones/DeclararLista").DeclararLista;
     let Asignacion                  =   require("../Instrucciones/Asignacion").Asignacion;
     let AsignacionVector            =   require("../Instrucciones/AsignacionVector").AsignacionVector;
-    let If                          =   require("../Instrucciones/If").If;
     let Ternario                    =   require("../Expresiones/Ternario").Ternario;
-    let Parametro                   =   require("../Instrucciones/Parametro").Parametro;
+    let If                          =   require("../Instrucciones/If").If;
     let AccesoVariable              =   require("../Expresiones/AccesoVariable").AccesoVariable;
-    let AccesoVector                =   require("../Expresiones/AccesoVector").AccesoVector;
     let AccesoLista                 =   require("../Expresiones/AccesoLista").AccesoLista;
+    let AccesoVector                =   require("../Expresiones/AccesoVector").AccesoVector;
     let LlamadaFuncion              =   require("../Expresiones/LlamadaFuncion").LlamadaFuncion;
+    let LlamadaPrint                =   require("../Expresiones/LlamadaPrint").LlamadaPrint;
     let OperacionAritmetica         =   require("../Expresiones/OperacionAritmetica").OperacionAritmetica;
     let OperacionLogica             =   require("../Expresiones/OperacionLogica").OperacionLogica;
     let OperacionRelacional         =   require("../Expresiones/OperacionRelacional").OperacionRelacional;
+    let FuncionLenguaje             =   require("../Expresiones/FuncionLenguaje").FuncionLenguaje;
     let While                       =   require("../Instrucciones/While").While;
-    let DoWhile                     =   require("../Instrucciones/DoWhile").DoWhile;
+    let ReturnPR                    =   require("../Expresiones/ReturnPR").ReturnPR;
     let Valor                       =   require("../Expresiones/Valor").Valor;
     let Incremento                  =   require("../Instrucciones/Incremento").Incremento;
     let Decremento                  =    require("../Instrucciones/Decremento").Decremento;
     let For                         =    require("../Instrucciones/For").For;
+    let DoWhile                     =   require("../Instrucciones/DoWhile").DoWhile;
     let Casteo                      =    require("../Expresiones/Casteo").Casteo;
     let InsertarLista               =    require("../Instrucciones/InsertarLista").InsertarLista;
     let ModificarLista              =    require("../Instrucciones/ModificarLista").ModificarLista;
-    let FuncionLenguaje             =    require("../Expresiones/FuncionLenguaje").FuncionLenguaje;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -72,14 +73,18 @@ frac                        (?:\.[0-9]+)
 "add"                           {   return 'tadd';     }                 
 "switch"                        {   return 'tswitch';     }                 
 "case"                        {   return 'tcase';     }                 
-"defaul"                        {   return 'tdefaul';     }
+"default"                        {   return 'tdefault';     }
 "toLower"                      {   return 'ttoLower';     }
 "toUpper"                      {   return 'ttoUpper';     }
-"length"                      {   return 'tlength';     }
 "truncate"                      {   return 'ttruncate';     }
-'round'                        {   return 'tround';     }
-'toString'                        {   return 'ttostring';     }
-'typeOf'                        {   return 'ttypeof';     }
+"round"                      {   return 'tround';     }
+"length"                      {   return 'tlength';     }
+"typeOf"                      {   return 'ttypeOf';     }
+"toString"                      {   return 'ttoString';     }
+"toCharArray"                      {   return 'ttoCharArray';     }
+"main"                          {   return 'tmain';     }
+"print"                           {   return 'tPrint';    }
+
 
 /* =================== EXPRESIONES REGULARES ===================== */
 ([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*             yytext = yytext.toLowerCase();          return 'id';
@@ -87,6 +92,8 @@ frac                        (?:\.[0-9]+)
 \'(?:{esc}["bfnrt/{esc}]|{esc}"u"[a-fA-F0-9]{4}|[^"{esc}])\'    yytext = yytext.substr(1,yyleng-2);     return 'caracter'
 {int}{frac}\b                                                                                           return 'decimal'
 {int}\b                                                                                                 return 'entero'
+
+//Error                                                                                              return 'entero'
 
 /* ======================== SIGNOS ======================= */
 "$"                             {return '$'};
@@ -119,8 +126,7 @@ frac                        (?:\.[0-9]+)
 "}"                             {return '}';}
 "["                             {return '[';}
 "]"                             {return ']';}
-digit                           {return 'num';}
-.                               {}
+. { console.log(`El caracter: "${yytext}" no pertenece al lenguaje`); }
 
 
 /lex
@@ -180,19 +186,45 @@ BLOQUE_SENTENCAS : '{' SENTENCIAS '}'
                 }
 ;
 
+
 SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   FUNCION                     { $$ = $1; }
-            |   ASIGNACION  ';'             { $$ = $1; }
-            |   VECTOR_ADD                  { $$ = $1; }
             |   LISTA_ADD                   { $$ = $1; }
             |   LISTA_MODIFICAR  ';'        { $$ = $1; }
+            |   ASIGNACION                  { $$ = $1; }
+            |   VECTOR_ADD                  { $$ = $1; }
             |   IF                          { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
             |   WHILE                       { $$ = $1; }
+            |   FOR                         { $$ = $1; }
             |   DO_WHILE                    { $$ = $1; }
             |   INCREMENTO       ';'        { $$ = $1; }
             |   DECREMENTO       ';'        { $$ = $1; }
-            |   FOR                         { $$ = $1; }
+            |   PRINT       ';'             { $$ = $1; }
+            |   MAIN ';'                    { $$ = $1; }
+            |   RETURN                    { $$ = $1; }
+;
+
+MAIN : tmain LLAMADA_FUNCION    { $$ = $2; }
+;
+
+PRINT : tPrint '(' LISTA_EXP ')' { $$ = new LlamadaPrint($1, $3, @1.first_line, @1.first_column);    }
+;
+
+RETURN  :   treturn ';'                     { $$ = new ReturnPR(undefined,@2.first_line, @2.first_column); }
+        |   treturn EXP ';'                 {  $$ = new ReturnPR($2,@2.first_line, @2.first_column);}
+;
+
+INCREMENTO : id '++'
+            {
+                $$ = new Incremento($1, @1.first_line, @1.first_column)
+            }
+;
+
+DECREMENTO : id '--'
+            {
+                $$ = new Decremento($1, @1.first_line, @1.first_column)
+            }
 ;
 
 DECLARACION : TIPO  id  '=' EXP 
@@ -213,25 +245,17 @@ DECLARACION : TIPO  id  '=' EXP
             }
             | tlist '<' TIPO '>' id '=' tnew tlist '<' TIPO '>'
             {
-                $$ = new DeclararLista($3, $5, $10, @2.first_line, @2.first_column);
+                $$ = new DeclararLista($3, $5, $10,undefined, @2.first_line, @2.first_column);
+            }
+            | tlist '<' TIPO '>' id '=' EXP
+            {
+                $$ = new DeclararLista($3, $5, undefined, $7,  @2.first_line, @2.first_column);
             }
 ;
 
-ASIGNACION  :    id '=' EXP
+ASIGNACION  :    id '=' EXP ';'
             {
                 $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
-            }
-;
-
-INCREMENTO : id '++'
-            {
-                $$ = new Incremento($1, @1.first_line, @1.first_column)
-            }
-;
-
-DECREMENTO : id '--'
-            {
-                $$ = new Decremento($1, @1.first_line, @1.first_column)
             }
 ;
 
@@ -245,6 +269,18 @@ LISTA_ADD: id '.' tadd '(' EXP ')' ';'
             {
                 $$ = new InsertarLista($1, $5, @1.first_line, @1.first_column);
             }
+;
+
+TERNARIA: EXP '?' EXP ':' EXP
+        {
+            $$ = new Ternario($1, $3, $5, @1.first_line, @1.first_column);
+        }
+;
+
+CASTEO: '(' TIPO ')' EXP
+    {
+        $$ = new Casteo($2, $4, @1.first_line, @1.first_column);
+    }
 ;
 
 LISTA_MODIFICAR: id '[' '[' entero ']' ']' '=' EXP
@@ -275,12 +311,6 @@ ELSE    :   telse IF
         }
 ;
 
-WHILE   : twhile '(' EXP ')' BLOQUE_SENTENCAS
-        {
-            $$ = new While($3, $5, @1.first_line, @1.first_column );
-        }
-;
-
 DO_WHILE : tdo BLOQUE_SENTENCAS twhile '(' EXP ')' ';'
         {
             $$ = new DoWhile($2, $5, @1.first_line, @1.first_column );
@@ -297,23 +327,13 @@ FOR     : tfor '(' DECLARACION ';' EXP ';' ACTUALIZACION_FOR ')' BLOQUE_SENTENCA
         }
 ;
 
-ACTUALIZACION_FOR: id '++'
+WHILE   : twhile '(' EXP ')' BLOQUE_SENTENCAS
         {
-           $$ = new Incremento($1, @1.first_line, @1.first_column);
-        }
-        | id '--'
-        {
-           $$ = new Decremento($1, @1.first_line, @1.first_column); 
+            $$ = new While($3, $5, @1.first_line, @1.first_column );
         }
 ;
 
-CASTEO: '(' TIPO ')' EXP
-    {
-        $$ = new Casteo($2, $4, @1.first_line, @1.first_column);
-    }
-;
-
-FUNCION:    TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
+FUNCION:        TIPO    id '(' LISTA_PARAM ')' BLOQUE_SENTENCAS
             {
                 $$ = new DeclararFuncion($1, $2, $4, $6, @2.first_line, @2.first_column);
             }
@@ -341,7 +361,8 @@ TIPO    :       tinteger                    { $$ = new Tipo(TipoPrimitivo.Intege
 
 LISTA_PARAM :   LISTA_PARAM ',' TIPO id
             {
-                $1.push( new DeclararVariable($3, $4, undefined, @1.first_line, @1.first_column) );
+                let decla=new DeclararVariable($3, $4, undefined, @1.first_line, @1.first_column)
+                $1.push(decla);
                 $$ = $1;
             }
             |   TIPO id
@@ -366,51 +387,36 @@ LISTA_EXP : LISTA_EXP ',' EXP
         }
 ;
 
-LLAMADA_FUNCION     : id '(' LISTA_EXP ')' { $$ = new LlamadaFuncion($1, $3, @1.first_line, @1.first_column);    }
+LLAMADA_FUNCION  : id '('  ')' { $$ = new LlamadaFuncion($1, [], @1.first_line, @1.first_column);    } 
+                | id '(' LISTA_EXP ')' { $$ = new LlamadaFuncion($1, $3, @1.first_line, @1.first_column);    }
 ;
 
-TERNARIA: EXP '?' EXP ':' EXP
+ACTUALIZACION_FOR: id '++'
         {
-            $$ = new Ternario($1, $3, $5, @1.first_line, @1.first_column);
+           $$ = new Incremento($1, @1.first_line, @1.first_column)
         }
-;
-
-SWITCH: tswitch '(' EXP ')' '{' BLOQUE_SWITCH '}'
-;
-
-BLOQUE_SWITCH: '{' L_CASE '}'
-    | '{' '}' 
-;
-
-L_CASE: L_CASE CASE
-        | CASE
-;
-
-CASE: tcase EXP BLOCK_CASES
-    | tdefaul BLOCK_CASES
-;
-
-BLOCK_CASES: ':' SENTENCIAS
-| ':'
+        | id '--'
+        {
+           $$ = new Decremento($1, @1.first_line, @1.first_column) 
+        }
 ;
 
 FUNCIONES_LENGUAJE
     : ttoLower '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
     | ttoUpper '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
-    | tlength '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
     | ttruncate '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
     | tround '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
-    | ttostring '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
-    | ttypeof '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | ttoCharArray '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | ttoString '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
+    | ttypeOf '(' EXP ')' {$$ = new FuncionLenguaje($1, $3, @1.first_line, @1.first_column);}
 ;
- 
 
 EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '-' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '*' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '/' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
-    |   EXP '^' EXP                    { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
-    |   '-' EXP %prec negativo          { $$ = $2;}
+    |   EXP '^' EXP                     { $$ = new OperacionAritmetica($1, $2, $3, @2.first_line, @2.first_column);}
+    |   '-' EXP %prec negativo          { $$ = new OperacionAritmetica($2, "negativo", $2, @2.first_line, @2.first_column);}
     |   '(' EXP ')'                     { $$ = $2;}
     |   EXP '=='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '!='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
@@ -419,11 +425,11 @@ EXP :   EXP '+' EXP                     { $$ = new OperacionAritmetica($1, $2, $
     |   EXP '<='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '>='  EXP                   { $$ = new OperacionRelacional($1, $2, $3, @2.first_line, @2.first_column);}
     |   EXP '&&'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
-    |   EXP '||'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}        
+    |   EXP '||'  EXP                   { $$ = new OperacionLogica($1, $2, $3, @2.first_line, @2.first_column);}
     |   id                              { $$ = new AccesoVariable($1, @1.first_line, @1.first_column);        }
     |   id '[' EXP ']'                  { $$ = new AccesoVector($1, $3,@1.first_line, @1.first_column);        }
-    |   id  '[' '[' EXP ']' ']'         { $$ = new AccesoLista($1, $4, @1.first_line, @1.first_column);}
-    |   LLAMADA_FUNCION                 { $$ = $1; }
+    |   id '[' '[' EXP ']'']'           { $$ = new AccesoLista($1,$4,@1.first_line, @1.first_column);        }
+    |   LLAMADA_FUNCION                 { $$ = $1;}
     |   entero                          { $$ = new Valor($1, "integer", @1.first_line, @1.first_column);}
     |   decimal                         { $$ = new Valor($1, "double", @1.first_line, @1.first_column); }
     |   caracter                        { $$ = new Valor($1, "char", @1.first_line, @1.first_column);   }

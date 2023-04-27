@@ -3,7 +3,8 @@ import { AST } from "../Entorno/AST";
 import { Expresion } from "../Entorno/Expresion";
 import { Instruccion } from "../Entorno/Instruccion";
 import { Nodo } from "../Entorno/Nodo";
-import { Variable } from "../Entorno/Simbolos/Variable";
+import { If } from "./If";
+import { ReturnPR } from "../Expresiones/ReturnPR";
 
 export class For extends Instruccion {
 
@@ -21,20 +22,33 @@ export class For extends Instruccion {
     }
 
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
-    let ambito_local = new Ambito(actual);
+        let ambito_local = new Ambito(actual);
         this.inicializador.ejecutar(ambito_local, global, ast);
-
+        let a,b;
         while (this.condicion.getValor(ambito_local, global, ast)) {
             for (let sentencia of this.sentencias) {
-                if (sentencia instanceof Instruccion) {
-                    sentencia.ejecutar(ambito_local, global, ast);
+                if (sentencia instanceof Instruccion){
+                    let s=sentencia.ejecutar(ambito_local, global, ast);
+                    if (s!=undefined) {
+                        if(s=="return"){
+                            return "return";
+                        }else{
+                            return s;
+                        }
+                    } 
                 }
-                if (sentencia instanceof Expresion) {
-                    sentencia.getValor(ambito_local, global, ast);
+                if(sentencia instanceof Expresion){
+                    let a=sentencia.getValor(actual, global, ast);  
+                    if(sentencia instanceof ReturnPR){
+                        if(a=="return"){
+                            return "return";
+                        }else{
+                            return a;
+                        }
+                    }            
                 }
             }
             this.actualizacion.ejecutar(ambito_local, global, ast);
         }
     }
-
 }

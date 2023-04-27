@@ -6,11 +6,11 @@ import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 
 export class Asignacion extends Instruccion {
 
-    id:     string;
-    exp:    Expresion;
+    id: string;
+    exp: Expresion;
 
     constructor(id: string, exp: Expresion, linea: number, columna: number) {
-        
+
         super(linea, columna);
         this.id = id;
         this.exp = exp;
@@ -18,21 +18,39 @@ export class Asignacion extends Instruccion {
 
 
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
-        
+
         let variable = actual.getVariable(this.id);
-        if(variable === undefined) {
+        if (variable === undefined) {
             // * ERROR *
             throw new Error("ERROR => No se ha definido la variable " + this.id);
         }
 
         let valor_asig = this.exp.getValor(actual, global, ast);
-        if(variable.getTipo().getPrimitivo() != this.exp.tipo.getPrimitivo()) {
-            throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id + " en linea: " + this.linea);
+        console.log(valor_asig)
+        if (this.exp.tipo.getPrimitivo() == TipoPrimitivo.Integer || this.exp.tipo.getPrimitivo() == TipoPrimitivo.Double) {
+            if (variable.getTipo().getPrimitivo() == TipoPrimitivo.Double || variable.getTipo().getPrimitivo() == TipoPrimitivo.Integer) {
+                variable.asignarValor(valor_asig);
+            } else {
+                throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id);
+            }
+        } else if (this.exp.tipo.getPrimitivo() == TipoPrimitivo.String) {
+            if (variable.getTipo().getPrimitivo() == TipoPrimitivo.String) {
+                variable.asignarValor(valor_asig);
+            } else {
+                throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id);
+            }
+        } else if (this.exp.tipo.getPrimitivo() == TipoPrimitivo.Char) {
+            if (variable.getTipo().getPrimitivo() == TipoPrimitivo.Char) {
+                variable.asignarValor(valor_asig);
+            } else {
+                throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id);
+            }
+        } else {
+            if (variable.getTipo().getPrimitivo() == TipoPrimitivo.Boolean) {
+                variable.asignarValor(valor_asig);
+            } else {
+                throw new Error("ERROR => El tipo del valor asignado no corresponde a la variable " + this.id);
+            }
         }
-
-        //console.log(this.exp);
-        variable.asignarValor(valor_asig);
-
     }
-
 }

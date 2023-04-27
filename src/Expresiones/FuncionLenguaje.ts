@@ -78,9 +78,42 @@ export class FuncionLenguaje extends Expresion {
                     this.tipo = new Tipo(TipoPrimitivo.String);
                     return cadenaString;
                 }
+            case "toCharArray":
+                {
+                    let valor = this.exp.getValor(actual, global, ast);
+                    let vector = valor.split("");
+                    return vector;
+                }
             case "typeOf":
                 {
+                    let valor = this.exp.getValor(actual, global, ast);
+                    let tipoDato = typeof valor
                     
+                    if (tipoDato == "number") {
+                        if (Number.isInteger(valor)) {
+                            let tipoRetorno = "int";
+                            this.tipo = new Tipo(TipoPrimitivo.String);
+                            return tipoRetorno;
+                        } else {
+                            let tipoRetorno = "double";
+                            this.tipo = new Tipo(TipoPrimitivo.String);
+                            return tipoRetorno;
+                        }
+                    } else if (tipoDato == "string") {
+                        if (valor.length == 1) {
+                            let tipoRetorno = "char";
+                            this.tipo = new Tipo(TipoPrimitivo.String);
+                            return tipoRetorno;
+                        } else {
+                            let tipoRetorno = "String";
+                            this.tipo = new Tipo(TipoPrimitivo.String);
+                            return tipoRetorno;
+                        }
+                    } else if (tipoDato == "boolean") {
+                        let tipoRetorno = "boolean";
+                        this.tipo = new Tipo(TipoPrimitivo.String);
+                        return tipoRetorno;
+                    }
                 }
         }
     }

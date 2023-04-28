@@ -5,6 +5,8 @@ import { Instruccion } from "../Entorno/Instruccion";
 import { Tipo } from "../Entorno/Simbolos/Tipo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Variable } from "../Entorno/Simbolos/Variable";
+import { Symbol } from "../Tabla/Symbol";
+import { Tabla } from "../Tabla/Tabla";
 
 export class DeclararVariable extends Instruccion{
     
@@ -47,5 +49,6 @@ export class DeclararVariable extends Instruccion{
         console.log(res);
         let nueva_var = new Variable(this.tipo, this.id, res);
         actual.insertarVariable(this.id,nueva_var);
+        Tabla.insertarSimbolo(new Symbol(this.id, "Variable", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
     }
 }

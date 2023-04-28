@@ -5,6 +5,8 @@ import { Nodo } from "../Entorno/Nodo";
 import { Funcion } from "../Entorno/Simbolos/Funcion";
 import { Tipo } from "../Entorno/Simbolos/Tipo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
+import { Symbol } from "../Tabla/Symbol";
+import { Tabla } from "../Tabla/Tabla";
 import { DeclararVariable } from "./DeclararVariable";
 
 export class DeclararFuncion extends Instruccion {
@@ -44,6 +46,7 @@ export class DeclararFuncion extends Instruccion {
                 let nFuncion= new Funcion(this.tipo,this.nombre,this.parametros.length,array,this.sentencias,this.parametros)
                 actual.insertarFuncion(this.nombre,nFuncion);
             }
+            Tabla.insertarSimbolo(new Symbol(this.nombre, "Función", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
         }
         if(this.tipo.getPrimitivo()==TipoPrimitivo.Double){
             if(this.parametros.length==0){

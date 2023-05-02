@@ -203,6 +203,8 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   PRINT       ';'             { $$ = $1; }
             |   MAIN ';'                    { $$ = $1; }
             |   RETURN                    { $$ = $1; }
+            |   error ';'
+            |   error '}'
 ;
 
 MAIN : tmain LLAMADA_FUNCION    { $$ = $2; }

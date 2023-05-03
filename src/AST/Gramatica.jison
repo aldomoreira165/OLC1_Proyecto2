@@ -55,6 +55,8 @@ frac                        (?:\.[0-9]+)
 "toCharArray"                      {   return 'ttoCharArray';     }
 "main"                          {   return 'tmain';     }
 "print"                           {   return 'tPrint';    }
+"continue"                           {   return 'tContinue';    }
+"break"                           {   return 'tBreak';    }
 
 
 /* =================== EXPRESIONES REGULARES ===================== */
@@ -231,7 +233,22 @@ SENTENCIA :     DECLARACION ';'
             |   RETURN
             {
                 $$ = $1;
-            }                   
+            }
+            //arreglado
+            |   CONTINUE
+            {
+                $$ = $1;
+            }
+            //arreglado
+            |   BREAK
+            {
+                $$ = $1;
+            }
+            //arreglado
+            |   SWITCH 
+            {
+                $$ = $1;
+            }                
 ;
 
 //arreglado
@@ -270,6 +287,20 @@ RETURN  :   treturn ';'
             $$.hijos.push(nodoR);
             $$.hijos.push($2);
         }                 
+;
+
+//arreglado
+CONTINUE  :   tContinue ';'
+    {
+        $$ = new Nodo("Continue");
+    } 
+;
+
+//arreglado
+BREAK  :   tBreak ';'
+    {   
+        $$ = new Nodo("Break");
+    } 
 ;
 
 //arreglado
@@ -751,6 +782,71 @@ ACTUALIZACION_FOR: id '++'
         }
 ;
 
+
+SWITCH
+  : tswitch '(' EXP ')' BLOCK_SWITCH
+  {
+    let nodoSwitch = new Nodo($1);
+    let nodopi24 = new Nodo($2);
+    let nodopd24 = new Nodo($4);
+
+    $$ = new Nodo("Switch");
+    $$.hijos.push(nodoSwitch);
+    $$.hijos.push(nodopi24);
+    $$.hijos.push($3);
+    $$.hijos.push(nodopd24);
+    $$.hijos.push($5);
+  }
+;
+
+BLOCK_SWITCH
+  : '{'  L_CASE '}'
+    {
+        $$ = $2;
+    }
+  | '{' '}'
+;
+
+L_CASE
+  : L_CASE CASES
+    {
+        $$ = $1;
+        $$.hijos.push($2);
+    }
+  | CASES
+    {
+        $$ = $1;
+    }
+;
+
+CASES
+  : tcase EXP BLOCK_CASES
+    {
+        let nodoCase = new Nodo($1);
+        $$ = new Nodo("Case");
+        $$.hijos.push(nodoCase);
+        $$.hijos.push($2);
+        $$.hijos.push($3);
+    }
+  | tdefault BLOCK_CASES
+    {
+        let nodoDefaul = new Nodo($1);
+        $$ = new Nodo("Default");
+        $$.hijos.push(nodoDefaul);
+        $$.hijos.push($2);
+    }
+;
+
+BLOCK_CASES
+  : ':' SENTENCIAS
+    {
+        $$ = $2;
+    }
+  | ':'
+;
+
+
+//arreglado
 FUNCIONES_LENGUAJE
     : ttoLower '(' EXP ')'
     {

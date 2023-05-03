@@ -61,6 +61,23 @@
                                     aria-expanded="false">
                                     Reportes
                                 </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li class="dropdown-item opcion">
+                                        <form method="POST" action="/reporteSimbolos">
+                                            <button type="submit" class="btn btn-outline-warning m-3">Simbolos</button>
+                                        </form>
+                                    </li>
+                                    <li class="dropdown-item opcion">
+                                        <form method="POST" action="/reporteErrores">
+                                            <button type="submit" class="btn btn-outline-warning m-3">Errores</button>
+                                        </form>
+                                    </li>
+                                    <li class="dropdown-item opcion">
+                                        <form method="POST" action="/reporteAST">
+                                            <button type="submit" class="btn btn-outline-warning m-3">AST</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </div>
@@ -69,7 +86,7 @@
             <div id="cuerpo-compilador" class="col-12 bg-black">
                 <div class="jumbotron m-2">
                     <form method="POST" action="/ejecutar">
-                        <button type="submit" class="btn btn-outline-success m-3">Ejecutar</button>
+                        <button type="submit" class="btn btn-outline-warning m-3">Ejecutar</button>
                         <textarea id="editor" name="codigo"><%= codigo %></textarea>
                     </form>
                 </div>
@@ -79,73 +96,71 @@
                 </div>
             </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
-    <script>
-        var Editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-            lineNumbers: true,
-            mode: "text/x-java",
-            theme: "midnight",
-            autoCloseBrackets: true,
-            //lineWrapping : true,
-            styleActiveLine: true
-        });
-        Editor.setSize("600", "579");
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+        <script>
+            var Editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+                lineNumbers: true,
+                mode: "text/x-java",
+                theme: "midnight",
+                autoCloseBrackets: true,
+                //lineWrapping : true,
+                styleActiveLine: true
+            });
+            Editor.setSize("600", "579");
 
-        var Salida = CodeMirror.fromTextArea(document.getElementById('salida'), {
-            lineNumbers: true,
-            mode: "text/x-java",
-            theme: "midnight",
-            autoCloseBrackets: true,
-            //lineWrapping : true,
-            styleActiveLine: true
-        });
-        Salida.setSize("600", "579");
+            var Salida = CodeMirror.fromTextArea(document.getElementById('salida'), {
+                lineNumbers: true,
+                mode: "text/x-java",
+                theme: "midnight",
+                autoCloseBrackets: true,
+                //lineWrapping : true,
+                styleActiveLine: true
+            });
+            Salida.setSize("600", "579");
 
-        document.getElementById("btn-crear-archivo").addEventListener("click", function () {
-            Editor.setValue("");
-        });
+            document.getElementById("btn-crear-archivo").addEventListener("click", function () {
+                Editor.setValue("");
+            });
 
-        document.getElementById("btn-abrir-archivo").addEventListener("click", function () {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.tw';
-            input.onchange = (event) => {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                reader.readAsText(file, 'UTF-8');
-                reader.onload = (readerEvent) => {
-                    const content = readerEvent.target.result;
-                    Editor.setValue(content);
+            document.getElementById("btn-abrir-archivo").addEventListener("click", function () {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.tw';
+                input.onchange = (event) => {
+                    const file = event.target.files[0];
+                    const reader = new FileReader();
+                    reader.readAsText(file, 'UTF-8');
+                    reader.onload = (readerEvent) => {
+                        const content = readerEvent.target.result;
+                        Editor.setValue(content);
+                    };
                 };
-            };
-            input.click();
-        });
+                input.click();
+            });
 
-        document.getElementById("btn-guardar-archivo").addEventListener("click", function () {
-            const fileName = window.prompt("Nombre del archivo:");
-            if (fileName) {
-                const textToSave = Editor.getValue();
-                const textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
-                const textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-                const downloadLink = document.createElement("a");
-                downloadLink.download = fileName + ".tw";
-                downloadLink.innerHTML = "Descargar archivo";
-                downloadLink.href = textToSaveAsURL;
-                downloadLink.onclick = destroyClickedElement;
-                downloadLink.style.display = "none";
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
+            document.getElementById("btn-guardar-archivo").addEventListener("click", function () {
+                const fileName = window.prompt("Nombre del archivo:");
+                if (fileName) {
+                    const textToSave = Editor.getValue();
+                    const textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
+                    const textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+                    const downloadLink = document.createElement("a");
+                    downloadLink.download = fileName + ".tw";
+                    downloadLink.innerHTML = "Descargar archivo";
+                    downloadLink.href = textToSaveAsURL;
+                    downloadLink.onclick = destroyClickedElement;
+                    downloadLink.style.display = "none";
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                }
+            });
+
+            function destroyClickedElement(event) {
+                document.body.removeChild(event.target);
             }
-        });
-
-        function destroyClickedElement(event) {
-            document.body.removeChild(event.target);
-        }
-    </script>
-
+        </script>
 </body>
 
 </html>

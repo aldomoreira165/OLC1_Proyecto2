@@ -133,7 +133,7 @@ frac                        (?:\.[0-9]+)
 "}"                             {return '}';}
 "["                             {return '[';}
 "]"                             {return ']';}
-. {  console.log(`El caracter: "${yytext}" no pertenece al lenguaje`); }
+. {  TablaError.insertarError(new Error("Lexico", `El caracter: "${yytext}" no pertenece al lenguaje`, yylloc.first_line,yylloc.first_column)); }
 
 /lex
 
@@ -168,7 +168,7 @@ INICIO
         return raiz;
     }
     ;
-
+ 
 SENTENCIAS :    SENTENCIAS SENTENCIA
             {
                 $1.push($2);
@@ -212,7 +212,10 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   CONTINUE                    { $$ = $1; }
             |   BREAK                       { $$ = $1; }
             |   SWITCH                      { $$ = $1; }
+            | error ';'               { console.log("error sintactico"); }
+            | error '}'                {console.log("error sintactico"); }
 ;
+//TablaError.insertarError(new Error("Sintactico", `El caracter:  no pertenece a la gramatica`, this._$.first_line,this._$.first_column))
 
 MAIN : tmain LLAMADA_FUNCION    { $$ = $2; }
 ;

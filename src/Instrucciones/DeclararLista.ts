@@ -6,6 +6,8 @@ import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Arreglo } from "../Entorno/Simbolos/Arreglo";
 import { Expresion } from "../Entorno/Expresion";
 import { Lista } from "../Entorno/Simbolos/Lista";
+import { Tabla } from "../Tabla/Tabla";
+import { Symbol } from "../Tabla/Symbol";
 
 export class DeclararLista extends Instruccion {
 
@@ -37,6 +39,7 @@ export class DeclararLista extends Instruccion {
                 let array: Expresion[] = [];
                 let nueva_lista = new Lista(this.tipo, this.id, this.ctipo, array);
                 actual.insertarLista(this.id, nueva_lista);
+                Tabla.insertarSimbolo(new Symbol(this.id, "Lista", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
             } else if (this.ctipo != this.tipo && this.ctipo != undefined) {
                 throw new Error("Lista mal definida en el entorno actual: " + this.linea + " , " + this.columna);
             }
@@ -49,7 +52,8 @@ export class DeclararLista extends Instruccion {
             let array: Expresion[] = [];
             let nueva_lista = new Lista(this.tipo, this.id, this.tipo, array);
             actual.insertarLista(this.id, nueva_lista)
-
+            Tabla.insertarSimbolo(new Symbol(this.id, "Lista", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+            
             let arregloChar = this.charArray.getValor(actual, global, ast);
             let lista = actual.getLista(this.id);
 

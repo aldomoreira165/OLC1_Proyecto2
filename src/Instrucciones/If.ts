@@ -7,6 +7,8 @@ import { Nodo } from "../Entorno/Nodo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { ReturnPR } from "../Expresiones/ReturnPR";
 import { LlamadaFuncion } from "../Expresiones/LlamadaFuncion";
+import { Break } from "../Expresiones/Break";
+import { Continue } from "../Expresiones/Continue";
 export class If extends Instruccion {
     
     exp_condicion   : Expresion;
@@ -38,6 +40,10 @@ export class If extends Instruccion {
                     if (s!=undefined){
                         if(s=="return"){
                             return "return";
+                        }else if(s=="break"){
+                            return "break";
+                        }else if(s=="continue"){
+                            return "continue";
                         }else{
                             return s;
                         }
@@ -50,6 +56,15 @@ export class If extends Instruccion {
                             return "return";
                         }else{
                             return a;
+                        }
+                    }else if(sentencia instanceof Break){
+                        if(a=="break"){
+                            return "break";
+                        }
+                    }else if(sentencia instanceof Continue){
+                        if(a=="continue"){
+                            console.log("continue if")
+                            return "continue";
                         }
                     }
   
@@ -64,6 +79,10 @@ export class If extends Instruccion {
                     if (s!=undefined) {
                         if(s=="return"){
                             return "return";
+                        }else if(s=="break"){
+                            return "break";
+                        }else if(s=="continue"){
+                            return "continue";
                         }else{
                             return s;
                         }
@@ -76,6 +95,14 @@ export class If extends Instruccion {
                             return "return";
                         }else{
                             return a;
+                        }
+                    }else if(sentencia instanceof Break){
+                        if(a=="break"){
+                            return "break";
+                        }
+                    }else if(sentencia instanceof Continue){
+                        if(a=="continue"){
+                            return "continue";
                         }
                     }
                 }

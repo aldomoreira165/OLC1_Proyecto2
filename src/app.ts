@@ -8,6 +8,7 @@ import { Analizador } from './Analizador/Analizador';
 import { AST } from './Entorno/AST';
 import Gramatica from './AST/Gramatica';
 import { Tabla } from './Tabla/Tabla';
+import { TablaError } from './Tabla/TablaError';
 
 const app = express();
 const port = 3000;
@@ -42,6 +43,7 @@ app.post('/ejecutar', (req, res) => {
 
     //para la tabla de símbolos
     Tabla.vaciarArreglo();
+    //TablaError.vaciarArreglo();
 
     let cadena_codigo = req.body.codigo;
     let analizador = new Analizador(cadena_codigo, "editor");
@@ -49,6 +51,7 @@ app.post('/ejecutar', (req, res) => {
 
     crearAST(cadena_codigo);
     crearTabla();
+
 
     if (ast != undefined) {
         res.render('index.ejs', { title: 'TypeWise', salida: ast.getSalida(), codigo: cadena_codigo });
@@ -101,7 +104,6 @@ function crearAST(codigo) {
                 fontname=Helvetica, fontweight=bold, fontcolor=black,
                 fontsize=10, fixedsize=true];
         `+ raizAST.graficar() + " \n }";
-        console.log(contenido);
 
         fs.writeFile(archivo, contenido, err => {
             if (err) {

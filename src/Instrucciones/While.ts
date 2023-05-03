@@ -4,7 +4,6 @@ import { Expresion } from "../Entorno/Expresion";
 import { Instruccion } from "../Entorno/Instruccion";
 import { Nodo } from "../Entorno/Nodo";
 import { ReturnPR } from "../Expresiones/ReturnPR";
-import { If } from "./If";
 
 export class While extends Instruccion{
     

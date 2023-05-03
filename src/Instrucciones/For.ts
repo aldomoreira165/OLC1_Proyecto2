@@ -3,7 +3,6 @@ import { AST } from "../Entorno/AST";
 import { Expresion } from "../Entorno/Expresion";
 import { Instruccion } from "../Entorno/Instruccion";
 import { Nodo } from "../Entorno/Nodo";
-import { If } from "./If";
 import { ReturnPR } from "../Expresiones/ReturnPR";
 
 export class For extends Instruccion {
@@ -23,8 +22,7 @@ export class For extends Instruccion {
 
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
         let ambito_local = new Ambito(actual);
-        this.inicializador.ejecutar(ambito_local, global, ast);
-        let a,b;
+        this.inicializador.ejecutar(actual, global, ast);
         while (this.condicion.getValor(ambito_local, global, ast)) {
             for (let sentencia of this.sentencias) {
                 if (sentencia instanceof Instruccion){
@@ -32,10 +30,15 @@ export class For extends Instruccion {
                     if (s!=undefined) {
                         if(s=="return"){
                             return "return";
+                        }else if(s=="break"){
+                            return;
+                        }else if(s=="continue"){
+                            console.log("continue while")
+                            continue;
                         }else{
                             return s;
                         }
-                    } 
+                    }  
                 }
                 if(sentencia instanceof Expresion){
                     let a=sentencia.getValor(actual, global, ast);  
@@ -45,7 +48,15 @@ export class For extends Instruccion {
                         }else{
                             return a;
                         }
-                    }            
+                    }   
+                    if (a!=undefined) {
+                        if(a=="continue"){
+                            console.log("continue while")
+                            continue;
+                        }else if(a=="break"){
+                            return;
+                        }
+                    }          
                 }
             }
             this.actualizacion.ejecutar(ambito_local, global, ast);

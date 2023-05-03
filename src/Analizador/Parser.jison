@@ -21,6 +21,8 @@
     let FuncionLenguaje             =   require("../Expresiones/FuncionLenguaje").FuncionLenguaje;
     let While                       =   require("../Instrucciones/While").While;
     let ReturnPR                    =   require("../Expresiones/ReturnPR").ReturnPR;
+    let Continue                    =   require("../Expresiones/Continue").Continue;
+    let Break                       =   require("../Expresiones/Break").Break;
     let Valor                       =   require("../Expresiones/Valor").Valor;
     let Incremento                  =   require("../Instrucciones/Incremento").Incremento;
     let Decremento                  =    require("../Instrucciones/Decremento").Decremento;
@@ -29,6 +31,10 @@
     let Casteo                      =    require("../Expresiones/Casteo").Casteo;
     let InsertarLista               =    require("../Instrucciones/InsertarLista").InsertarLista;
     let ModificarLista              =    require("../Instrucciones/ModificarLista").ModificarLista;
+    let Switch                      =   require("../Instrucciones/Switch").Switch;
+    let CaseSwitch                  =    require("../Instrucciones/CaseSwitch").CaseSwitch;
+    let Error                       =    require("../Tabla/Error").Error;
+    let TablaError                       =    require("../Tabla/TablaError").TablaError;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -84,7 +90,8 @@ frac                        (?:\.[0-9]+)
 "toCharArray"                      {   return 'ttoCharArray';     }
 "main"                          {   return 'tmain';     }
 "print"                           {   return 'tPrint';    }
-
+"continue"                           {   return 'tContinue';    }
+"break"                           {   return 'tBreak';    }
 
 /* =================== EXPRESIONES REGULARES ===================== */
 ([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*             yytext = yytext.toLowerCase();          return 'id';
@@ -126,8 +133,7 @@ frac                        (?:\.[0-9]+)
 "}"                             {return '}';}
 "["                             {return '[';}
 "]"                             {return ']';}
-. { console.log(`El caracter: "${yytext}" no pertenece al lenguaje`); }
-
+. {  console.log(`El caracter: "${yytext}" no pertenece al lenguaje`); }
 
 /lex
 
@@ -202,9 +208,10 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   DECREMENTO       ';'        { $$ = $1; }
             |   PRINT       ';'             { $$ = $1; }
             |   MAIN ';'                    { $$ = $1; }
-            |   RETURN                    { $$ = $1; }
-            |   error ';'
-            |   error '}'
+            |   RETURN                      { $$ = $1; }
+            |   CONTINUE                    { $$ = $1; }
+            |   BREAK                       { $$ = $1; }
+            |   SWITCH                      { $$ = $1; }
 ;
 
 MAIN : tmain LLAMADA_FUNCION    { $$ = $2; }
@@ -215,6 +222,12 @@ PRINT : tPrint '(' LISTA_EXP ')' { $$ = new LlamadaPrint($1, $3, @1.first_line, 
 
 RETURN  :   treturn ';'                     { $$ = new ReturnPR(undefined,@2.first_line, @2.first_column); }
         |   treturn EXP ';'                 {  $$ = new ReturnPR($2,@2.first_line, @2.first_column);}
+;
+
+CONTINUE  :   tContinue ';'                     { $$ = new Continue(@2.first_line, @2.first_column); }
+;
+
+BREAK  :   tBreak ';'                       { $$ = new Break(@2.first_line, @2.first_column); }
 ;
 
 INCREMENTO : id '++'
@@ -261,7 +274,7 @@ ASIGNACION  :    id '=' EXP
             }
 ;
 
-VECTOR_ADD  :   id '[' entero ']' '=' EXP ';'
+VECTOR_ADD  :   id '[' EXP ']' '=' EXP ';'
             {
                 $$ = new AsignacionVector($1, $6, $3,@1.first_line, @1.first_column);
             }
@@ -285,7 +298,7 @@ CASTEO: '(' TIPO ')' EXP
     }
 ;
 
-LISTA_MODIFICAR: id '[' '[' entero ']' ']' '=' EXP
+LISTA_MODIFICAR: id '[' '[' EXP ']' ']' '=' EXP
             {
                 $$ = new ModificarLista($1, $4, $8, @1.first_line, @1.first_column);
             }
@@ -405,6 +418,30 @@ ACTUALIZACION_FOR: id '++'
         {
            $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); 
         }
+;
+
+SWITCH
+  : tswitch '(' EXP ')' BLOCK_SWITCH { $$ = new Switch($3, $5, @1.first_line, @1.first_column); }
+;
+
+BLOCK_SWITCH
+  : '{'  L_CASE '}'         { $$ = $2; }
+  | '{' '}'                { $$ = []; }
+;
+
+L_CASE
+  : L_CASE CASES  { $$=$1; $$.push($2);}
+  | CASES         { $$=[]; $$.push($1); }
+;
+
+CASES
+  : tcase EXP BLOCK_CASES        { $$ = new CaseSwitch($2, $3, this._$.first_line, this._$.first_column);}
+  | tdefault BLOCK_CASES         { $$ = new CaseSwitch(null, $2, this._$.first_line, this._$.first_column);}
+;
+
+BLOCK_CASES
+  : ':' SENTENCIAS       { $$ = $2; }
+  | ':'                 { $$ = []; }
 ;
 
 FUNCIONES_LENGUAJE

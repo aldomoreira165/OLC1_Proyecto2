@@ -63,7 +63,6 @@ export class OperacionAritmetica extends Expresion {
             this.tipo = new Tipo(TipoPrimitivo.Double);
             return val1 % val2;
         }
-
     }
 
     public Negativo(val1: any, tipo1: Tipo, actual: Ambito, global: Ambito, ast: AST): any {

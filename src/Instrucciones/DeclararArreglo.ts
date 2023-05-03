@@ -5,6 +5,8 @@ import { Tipo } from "../Entorno/Simbolos/Tipo";
 import { TipoPrimitivo } from "../Entorno/Simbolos/TipoPrimitivo";
 import { Arreglo } from "../Entorno/Simbolos/Arreglo";
 import { Expresion } from "../Entorno/Expresion";
+import { Tabla } from "../Tabla/Tabla";
+import { Symbol } from "../Tabla/Symbol";
 
 export class DeclararArreglo extends Instruccion{
     
@@ -44,7 +46,9 @@ export class DeclararArreglo extends Instruccion{
                     }
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
-                actual.insertarArreglo(this.id,nuevo_arr);    
+                actual.insertarArreglo(this.id,nuevo_arr);
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+
             }else if(this.tipo.getPrimitivo() === TipoPrimitivo.Double){
                 let array: Expresion[] = [];
                 for(let i = 0; i<this.objetos.length; i++) {
@@ -57,6 +61,7 @@ export class DeclararArreglo extends Instruccion{
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
                 actual.insertarArreglo(this.id,nuevo_arr);
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
             } else if(this.tipo.getPrimitivo() === TipoPrimitivo.String) {
                 let array: Expresion[] = [];
                 for(let i = 0; i<this.objetos.length; i++) {
@@ -69,6 +74,7 @@ export class DeclararArreglo extends Instruccion{
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
                 actual.insertarArreglo(this.id,nuevo_arr);
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
             } else if(this.tipo.getPrimitivo() === TipoPrimitivo.Char) {
                 let array: Expresion[] = [];
                 for(let i = 0; i<this.objetos.length; i++) {
@@ -81,12 +87,14 @@ export class DeclararArreglo extends Instruccion{
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
                 actual.insertarArreglo(this.id,nuevo_arr);
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
             }
         }else if(this.ctipo.getPrimitivo()===this.tipo.getPrimitivo()){
             console.log(this.tam);
             let array: Expresion[] =  new Array(this.tam);
             let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
             actual.insertarArreglo(this.id,nuevo_arr);
+            Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
         }else if(this.ctipo!=this.tipo && this.ctipo!=undefined){
             throw new Error("Arreglo mal definido en el entorno actual: " + this.linea + " , " + this.columna);
         }

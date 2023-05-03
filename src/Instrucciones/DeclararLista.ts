@@ -25,6 +25,27 @@ export class DeclararLista extends Instruccion {
         this.charArray = charArray;
     }
 
+    private establecerTipo(){
+        let valor = this.tipo.getPrimitivo();
+    
+        switch (valor) {
+            case 0:
+                return "Entero"
+            case 1: 
+                return "Double"
+            case 2:
+                return "Char"
+            case 3: 
+                return "String"
+            case 4: 
+                return "Null"
+            case 5: 
+                return "Boolean"
+            case 6: 
+                return "Void"
+        }
+    }
+
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
 
         // Verificar que no exista variable
@@ -39,7 +60,7 @@ export class DeclararLista extends Instruccion {
                 let array: Expresion[] = [];
                 let nueva_lista = new Lista(this.tipo, this.id, this.ctipo, array);
                 actual.insertarLista(this.id, nueva_lista);
-                Tabla.insertarSimbolo(new Symbol(this.id, "Lista", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+                Tabla.insertarSimbolo(new Symbol(this.id, "Lista", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
             } else if (this.ctipo != this.tipo && this.ctipo != undefined) {
                 throw new Error("Lista mal definida en el entorno actual: " + this.linea + " , " + this.columna);
             }
@@ -52,7 +73,7 @@ export class DeclararLista extends Instruccion {
             let array: Expresion[] = [];
             let nueva_lista = new Lista(this.tipo, this.id, this.tipo, array);
             actual.insertarLista(this.id, nueva_lista)
-            Tabla.insertarSimbolo(new Symbol(this.id, "Lista", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+            Tabla.insertarSimbolo(new Symbol(this.id, "Lista", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
             
             let arregloChar = this.charArray.getValor(actual, global, ast);
             let lista = actual.getLista(this.id);

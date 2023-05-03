@@ -2,12 +2,11 @@ digraph G {
         node[shape=plaintext]
         table [label=<<table border="1" cellspacing="0">
             <tr><td>Identificador</td><td>Tipo</td><td>Tipo</td><td>Linea</td><td>Columna</td></tr>
-            undefined<tr><td>factorialiterativo</td><td>Función</td><td>0</td><td>8</td><td>4</td></tr>
-<tr><td>factorialrecursivo</td><td>Función</td><td>0</td><td>16</td><td>4</td></tr>
-<tr><td>n</td><td>Variable</td><td>0</td><td>8</td><td>23</td></tr>
-<tr><td>resultado</td><td>Variable</td><td>0</td><td>9</td><td>8</td></tr>
-<tr><td>i</td><td>Variable</td><td>0</td><td>10</td><td>13</td></tr>
-<tr><td>n</td><td>Variable</td><td>0</td><td>16</td><td>23</td></tr>
+            undefined<tr><td>dinero</td><td>Variable</td><td>Double</td><td>3</td><td>7</td></tr>
+<tr><td>sumar</td><td>Función</td><td>Entero</td><td>6</td><td>4</td></tr>
+<tr><td>saludo</td><td>Método</td><td>Void</td><td>10</td><td>5</td></tr>
+<tr><td>listas</td><td>Lista</td><td>String</td><td>1</td><td>4</td></tr>
+<tr><td>vectornumero</td><td>Vector</td><td>Entero</td><td>2</td><td>3</td></tr>
 
         </table>>]
     }

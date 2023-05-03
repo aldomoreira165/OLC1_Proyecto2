@@ -22,6 +22,27 @@ export class DeclararVariable extends Instruccion{
         this.exp = exp;
     }
 
+    private establecerTipo(){
+        let valor = this.tipo.getPrimitivo();
+    
+        switch (valor) {
+            case 0:
+                return "Entero"
+            case 1: 
+                return "Double"
+            case 2:
+                return "Char"
+            case 3: 
+                return "String"
+            case 4: 
+                return "Null"
+            case 5: 
+                return "Boolean"
+            case 6: 
+                return "Void"
+        }
+    }
+
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
         
         // Verificar que no exista variable
@@ -49,6 +70,6 @@ export class DeclararVariable extends Instruccion{
         console.log(res);
         let nueva_var = new Variable(this.tipo, this.id, res);
         actual.insertarVariable(this.id,nueva_var);
-        Tabla.insertarSimbolo(new Symbol(this.id, "Variable", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+        Tabla.insertarSimbolo(new Symbol(this.id, "Variable", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
     }
 }

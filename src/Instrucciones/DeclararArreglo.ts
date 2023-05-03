@@ -26,6 +26,27 @@ export class DeclararArreglo extends Instruccion{
         this.tam=tam;
     }
 
+    private establecerTipo(){
+        let valor = this.tipo.getPrimitivo();
+    
+        switch (valor) {
+            case 0:
+                return "Entero"
+            case 1: 
+                return "Double"
+            case 2:
+                return "Char"
+            case 3: 
+                return "String"
+            case 4: 
+                return "Null"
+            case 5: 
+                return "Boolean"
+            case 6: 
+                return "Void"
+        }
+    }
+
     public ejecutar(actual: Ambito, global: Ambito, ast: AST) {
         
         // Verificar que no exista variable
@@ -47,7 +68,7 @@ export class DeclararArreglo extends Instruccion{
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
                 actual.insertarArreglo(this.id,nuevo_arr);
-                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
 
             }else if(this.tipo.getPrimitivo() === TipoPrimitivo.Double){
                 let array: Expresion[] = [];
@@ -61,7 +82,7 @@ export class DeclararArreglo extends Instruccion{
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
                 actual.insertarArreglo(this.id,nuevo_arr);
-                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
             } else if(this.tipo.getPrimitivo() === TipoPrimitivo.String) {
                 let array: Expresion[] = [];
                 for(let i = 0; i<this.objetos.length; i++) {
@@ -74,7 +95,7 @@ export class DeclararArreglo extends Instruccion{
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
                 actual.insertarArreglo(this.id,nuevo_arr);
-                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
             } else if(this.tipo.getPrimitivo() === TipoPrimitivo.Char) {
                 let array: Expresion[] = [];
                 for(let i = 0; i<this.objetos.length; i++) {
@@ -87,14 +108,14 @@ export class DeclararArreglo extends Instruccion{
                 }
                 let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
                 actual.insertarArreglo(this.id,nuevo_arr);
-                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+                Tabla.insertarSimbolo(new Symbol(this.id, "Vector", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
             }
         }else if(this.ctipo.getPrimitivo()===this.tipo.getPrimitivo()){
             console.log(this.tam);
             let array: Expresion[] =  new Array(this.tam);
             let nuevo_arr=new Arreglo(this.tipo,this.id,this.ctipo,array);
             actual.insertarArreglo(this.id,nuevo_arr);
-            Tabla.insertarSimbolo(new Symbol(this.id, "Vector", (this.tipo.getPrimitivo()).toString(), (this.linea).toString(), (this.columna).toString()));
+            Tabla.insertarSimbolo(new Symbol(this.id, "Vector", this.establecerTipo(), (this.linea).toString(), (this.columna).toString()));
         }else if(this.ctipo!=this.tipo && this.ctipo!=undefined){
             throw new Error("Arreglo mal definido en el entorno actual: " + this.linea + " , " + this.columna);
         }

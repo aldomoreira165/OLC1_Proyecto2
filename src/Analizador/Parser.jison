@@ -34,7 +34,7 @@
     let Switch                      =   require("../Instrucciones/Switch").Switch;
     let CaseSwitch                  =    require("../Instrucciones/CaseSwitch").CaseSwitch;
     let Error                       =    require("../Tabla/Error").Error;
-    let TablaError                       =    require("../Tabla/TablaError").TablaError;
+    let TablaError                   =    require("../Tabla/TablaError").TablaError;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -212,10 +212,10 @@ SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   CONTINUE                    { $$ = $1; }
             |   BREAK                       { $$ = $1; }
             |   SWITCH                      { $$ = $1; }
-            | error ';'               { console.log("error sintactico"); }
-            | error '}'                {console.log("error sintactico"); }
+            |   error ';'                   { TablaError.insertarError(new Error("Sintáctico", "falta ;", this._$.first_line, this._$.first_column)); }
 ;
-//TablaError.insertarError(new Error("Sintactico", `El caracter:  no pertenece a la gramatica`, this._$.first_line,this._$.first_column))
+
+//console.log("HUBO UN ERROR SINTACTICO JIJIJI " + this._$.first_line);
 
 MAIN : tmain LLAMADA_FUNCION    { $$ = $2; }
 ;

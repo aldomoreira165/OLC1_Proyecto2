@@ -2,7 +2,10 @@ digraph G {
         node[shape=plaintext]
         table [label=<<table border="1" cellspacing="0">
             <tr><td>Identificador</td><td>Tipo</td><td>Tipo</td><td>Linea</td><td>Columna</td></tr>
-            undefined<tr><td>edad</td><td>Variable</td><td>Entero</td><td>1</td><td>4</td></tr>
+            undefined<tr><td>metodo1</td><td>Método</td><td>Void</td><td>6</td><td>5</td></tr>
+<tr><td>figura1</td><td>Método</td><td>Void</td><td>10</td><td>5</td></tr>
+<tr><td>n</td><td>Variable</td><td>Entero</td><td>10</td><td>13</td></tr>
+<tr><td>cadenafigura</td><td>Variable</td><td>String</td><td>11</td><td>15</td></tr>
 
         </table>>]
     }
